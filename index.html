@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人教研作品集</title>
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 更换稳定CDN，解决GitHub加载样式失败 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.0/dist/tailwind.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -30,6 +31,11 @@
         .modal-backdrop{
             background-color:rgba(0,0,0,0.55);
         }
+        /* 头像圆形裁剪 */
+        .avatar-circle{
+            object-fit: cover;
+            border-radius: 999px;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -45,12 +51,45 @@
     </header>
 
     <main class="max-w-6xl mx-auto px-4 py-10">
-        <!-- 简介区域 -->
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold mb-4">你好，欢迎查看我的作品集</h2>
-            <p class="text-gray-600 text-lg">
-                这里汇总了课程设计、数字探究课程、教案与教研相关项目成果，点击卡片查看项目完整详情。
-            </p>
+        <!-- ==========【头像+自我介绍区域（已增加邮箱联系方式）】========== -->
+        <section class="mb-12 bg-white rounded-xl card-shadow p-8">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <!-- 头像区域 -->
+                <div>
+                    <img class="avatar-circle w-40 h-40 border-4 border-primary/20"
+                         src="这里替换成你的头像图片链接"
+                         alt="个人头像">
+                </div>
+                <!-- 自我介绍文字 + 联系信息 -->
+                <div class="flex-1 text-center md:text-left">
+                    <h2 class="text-3xl font-bold mb-4">你好，我是XXX</h2>
+                    <p class="text-gray-600 text-lg leading-relaxed">
+                        这里写你的自我介绍。例如：教育技术学硕士，方向为数字化科学课程、项目式学习与元认知支架设计，熟悉K12课程研发、教案编写、学习单设计与AI教研工具落地。
+                        擅长小学科学、跨学科数字探究课程设计，具备完整课程从需求分析、内容开发到课堂测评的全流程经验。
+                    </p>
+                    <!-- 标签：技能关键词 -->
+                    <div class="mt-4 flex flex-wrap gap-3 justify-center md:justify-start">
+                        <span class="bg-blue-50 text-primary px-3 py-1 rounded-full text-sm">课程教研</span>
+                        <span class="bg-blue-50 text-primary px-3 py-1 rounded-full text-sm">数字化探究</span>
+                        <span class="bg-blue-50 text-primary px-3 py-1 rounded-full text-sm">学习支架设计</span>
+                        <span class="bg-blue-50 text-primary px-3 py-1 rounded-full text-sm">AI教学应用</span>
+                    </div>
+                    <!-- 联系信息区域 -->
+                    <div class="mt-6 flex flex-wrap gap-4 justify-center md:justify-start text-gray-700">
+                        <div class="flex items-center gap-2">
+                            <i class="fa fa-envelope text-primary"></i>
+                            <span>邮箱：xxx@example.com</span>
+                        </div>
+                        <!-- 如果需要手机号，把下面这行取消注释，填入号码 -->
+                        <!--
+                        <div class="flex items-center gap-2">
+                            <i class="fa fa-phone text-primary"></i>
+                            <span>电话：138-xxxx-xxxx</span>
+                        </div>
+                        -->
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- 课程项目区域 -->

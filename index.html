@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人教研作品集</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .card-shadow {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .modal-backdrop{
+            background-color:rgba(0,0,0,0.55);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- 导航栏 -->
+    <header class="bg-white shadow-sm sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4 py-5 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-primary">教研作品集</h1>
+            <nav>
+                <a href="#projectSection" class="mx-2 hover:text-primary">课程项目</a>
+                <a href="#otherSection" class="mx-2 hover:text-primary">其他产出</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-10">
+        <!-- 简介区域 -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-4">你好，欢迎查看我的作品集</h2>
+            <p class="text-gray-600 text-lg">
+                这里汇总了课程设计、数字探究课程、教案与教研相关项目成果，点击卡片查看项目完整详情。
+            </p>
+        </section>
+
+        <!-- 课程项目区域 -->
+        <section id="projectSection" class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 border-l-4 border-primary pl-3">📚 课程项目</h2>
+            <div id="projectList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 项目卡片由JS动态渲染 -->
+            </div>
+        </section>
+
+        <!-- 其他产出区域 -->
+        <section id="otherSection">
+            <h2 class="text-2xl font-bold mb-6 border-l-4 border-primary pl-3">📄 其他产出</h2>
+            <div id="otherList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 产出卡片由JS动态渲染 -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 课程详情弹窗 -->
+    <div id="detailModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 relative">
+            <button id="closeDetailModal" class="absolute top-3 right-3 text-gray-500 text-xl"><i class="fa fa-times"></i></button>
+            <h3 id="detailTitle" class="text-xl font-bold mb-4"></h3>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <!-- 其他产出详情弹窗 -->
+    <div id="otherDetailModal" class="hidden fixed inset-0 z-50 modal-backdrop items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6 relative">
+            <button id="closeOtherDetailModal" class="absolute top-3 right-3 text-gray-500 text-xl"><i class="fa fa-times"></i></button>
+            <h3 id="otherDetailTitle" class="text-xl font-bold mb-4"></h3>
+            <div id="otherDetailContent"></div>
+        </div>
+    </div>
+
+    <script>
+let siteData = {projects:[], otherWorks:{}};
+
+// 加载外部data.json
+async function loadData(){
+  try {
+    const resp = await fetch("./data.json");
+    if(!resp.ok) throw new Error("文件不存在");
+    siteData = await resp.json();
+    renderProjects();
+    renderOtherWorks();
+  } catch (e) {
+    console.error(e);
+    alert("加载数据失败！请保证 index.html 和 data.json 在同一个文件夹一起上传");
+  }
+}
+
+// ===== 渲染课程卡片 =====
+function renderProjects(){
+    const list = siteData.projects;
+    const wrap = document.getElementById('projectList');
+    wrap.innerHTML = "";
+    list.forEach(item=>{
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-xl card-shadow overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform";
+        card.innerHTML = `
+            <div class="h-48 bg-gray-100 flex items-center justify-center">
+                ${item.cover ? `<img src="${item.cover}" class="h-full w-full object-cover">` : '<i class="fa fa-book text-4xl text-gray-300"></i>'}
+            </div>
+            <div class="p-6">
+                <h3 class="font-bold text-xl mb-2">${item.title}</h3>
+                <p class="text-gray-600 mb-4 line-clamp-2">${item.intro}</p>
+                <div class="flex gap-2">
+                    <span class="text-blue-600 text-sm"><i class="fa fa-eye"></i>点击卡片查看详情</span>
+                </div>
+            </div>
+        `;
+        card.onclick = ()=> openDetail(item.id);
+        wrap.appendChild(card);
+    })
+}
+
+// =====渲染其他产出卡片 =====
+function renderOtherWorks(){
+    const works = siteData.otherWorks;
+    const wrap = document.getElementById('otherList');
+    wrap.innerHTML = "";
+    Object.keys(works).forEach(key=>{
+        const item = works[key];
+        const div = document.createElement('div');
+        div.className = "bg-white border rounded-lg p-6 hover:shadow-lg transition cursor-pointer";
+        div.innerHTML = `
+            <i class="fa fa-file-text-o text-3xl text-primary mb-3"></i>
+            <h3 class="font-bold text-lg">${item.title}</h3>
+            <p class="text-gray-600 text-sm mt-2 text-gray-600">${item.desc}</p>
+        `;
+        div.onclick = ()=> openOtherDetail(key);
+        wrap.appendChild(div);
+    })
+}
+
+// ===== 课程详情弹窗 =====
+function openDetail(id){
+    const list = siteData.projects;
+    const p = list.find(x=>x.id == id);
+    document.getElementById('detailTitle').innerText = p.title;
+    let html = `
+        <div class="py-2">
+            <h4 class="font-bold text-lg">📖 项目简介</h4>
+            <p class="text-gray-700">${p.intro}</p>
+        </div>
+        <div class="py-2">
+            <h4 class="font-bold text-lg">👨‍🏫 我的职责</h4>
+            <p class="text-gray-700">${p.duty}</p>
+        </div>
+        <div class="py-2">
+            <h4 class="font-bold text-lg">📑 课程大纲</h4>
+            <p class="text-gray-700">${p.outline}</p>
+            ${p.outlineImg ? `<img src="${p.outlineImg}" class="w-full rounded mt-2">` : ""}
+        </div>
+        <div class="py-2">
+            <h4 class="font-bold text-lg">📚 课时案例</h4>
+            <p class="text-gray-700">${p.lesson}</p>
+            ${p.lessonImg ? `<img src="${p.lessonImg}" class="w-full rounded mt-2">` : ""}
+        </div>
+        <div class="py-2">
+            <h4 class="font-bold text-lg">🤖 AI辅助教研详情</h4>
+            <p class="text-gray-700">${p.aiDetail}</p>
+        </div>
+        <div class="py-2">
+            <h4 class="font-bold text-lg">💡 复盘与思考</h4>
+            <p class="text-gray-700">${p.think}</p>
+        </div>
+        ${p.cover ? `<div class="mt-4"><img src="${p.cover}" class="w-full rounded"></div>` : ''}
+    `;
+    document.getElementById('detailContent').innerHTML = html;
+    document.getElementById('detailModal').classList.remove('hidden');
+    document.getElementById('detailModal').classList.add('flex');
+}
+
+// ===== 其他产出详情弹窗 =====
+function openOtherDetail(key){
+    const works = siteData.otherWorks;
+    const item = works[key];
+    document.getElementById('otherDetailTitle').innerText = item.title;
+    let html = `<div class="py-2"><p class="text-gray-700">${item.desc}</p></div>`;
+    if(item.img) html += `<img src="${item.img}" class="w-full rounded my-3">`;
+    if(item.video) html += `<video controls class="w-full rounded my-3"><source src="${item.video}"></video>`;
+    document.getElementById('otherDetailContent').innerHTML = html;
+    document.getElementById('otherDetailModal').classList.remove('hidden');
+    document.getElementById('otherDetailModal').classList.add('flex');
+}
+
+// ===== 关闭弹窗事件 =====
+document.getElementById('closeDetailModal').onclick = ()=> document.getElementById('detailModal').classList.add('hidden');
+document.getElementById('closeOtherDetailModal').onclick = ()=> document.getElementById('otherDetailModal').classList.add('hidden');
+
+// 页面启动
+loadData();
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "projects": [
+    {
+      "id": 1790666078118,
+      "title": "1",
+      "intro": "2",
+      "duty": "3",
+      "outline": "4",
+      "outlineImg": "5",
+      "lesson": "6",
+      "lessonImg": "7",
+      "aiDetail": "8",
+      "think": "9",
+      "cover": "0"
+    }
+  ],
+  "otherWorks": {
+    "work_1790666086020": {
+      "title": "1",
+      "desc": "2",
+      "img": "3",
+      "video": "4"
+    }
+  }
+}
